@@ -9,8 +9,10 @@ const jwtStrategy = new Strategy(
     secretOrKey: config.jwtSecret,
   },
   async (payload, done) => {
+    console.log(payload, done)
     try {
       const _user = await models.Users.findByPk(payload.sub);
+      console.log(_user)
       if (!_user) {
         return done(boom.unauthorized(), false); //en caso de que el user no exista acceso denegado
       }
@@ -20,6 +22,7 @@ const jwtStrategy = new Strategy(
         role: _user.role,
       });
     } catch (error) {
+      console.log(error)
       done(error, false); // en caso de no encontrar el encabezado arroja un error y deniega el acceso
     }
   },

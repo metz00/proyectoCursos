@@ -44,7 +44,7 @@ router.post(
   validatorHandler(createUserSchema, "body"),
   async (req, res, next) => {
     try {
-      res.status(204).send(await user.createUsers(req.body));
+      res.status(204).send(await user.create(req.body));
     } catch (error) {
       next(error);
     }
