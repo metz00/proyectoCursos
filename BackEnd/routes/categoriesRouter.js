@@ -21,18 +21,19 @@ router.get("/", async (req, res, next) => {
     next(error);
   }
 });
-router.get(
-  "/:id",
-  validatorHandler(getCategorySchema, "params"),
-  async (req, res, next) => {
-    try {
-      const category = await categoryService.getIdCategory(req.params.id);
-      res.json(category);
-    } catch (error) {
-      next(error);
-    }
+router.get("/", async (req, res, next) => {
+  try {
+    const limit = parseInt(req.query.limit) || 10;
+    const page = parseInt(req.query.page) || 1;
+    const offset = (page - 1) * limit;
+
+    const result = await categoryService.getCategories(limit, offset);
+    res.json(result);
+  } catch (error) {
+    next(error);
   }
-);
+});
+
 router.post(
   "/",
   checkRoles(["admin"]),

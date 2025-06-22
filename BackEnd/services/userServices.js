@@ -1,5 +1,6 @@
 const bcrypt =  require('bcrypt');
 const { models } = require('../libs/sequelize');
+const boom = require("@hapi/boom");
 
 class UserServices {
 
@@ -35,6 +36,27 @@ class UserServices {
         })
         return user;
     }
+     async update(id, changes) {
+    const user = await this.table.findByPk(id);
+    if (!user) throw boom.notFound('Usuario no encontrado');
+
+    if (changes.password) {
+      const hash = await bcrypt.hash(changes.password, 10);
+      changes.password = hash;
+    }
+
+    await user.update(changes);
+    delete user.dataValues.password;
+    return user;
+  }
+
+  async delete(id) {
+    const user = await this.table.findByPk(id);
+    if (!user) throw boom.notFound('Usuario no encontrado');
+    
+    await user.destroy();
+    return { message: 'Usuario eliminado correctamente' };
+  }
 }
 
 module.exports = UserServices;

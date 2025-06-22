@@ -16,7 +16,10 @@ const {
 
 router.get("/", async (req, res, next) => {
   try {
-    const courses = await courseService.getCategories();
+
+   const page = parseInt(req.query.page);
+   const limit = parseInt(req.query.limit)
+    const courses = await courseService.getCourses({ page, limit });
     res.json(courses);
   } catch (error) {
     next(error);
@@ -28,7 +31,7 @@ router.get(
   validatorHandler(getCourseSchema, "params"),
   async (req, res, next) => {
     try {
-      const course = await courseService.getIdCategory(req.params.id);
+      const course = await courseService.getIdCourses(req.params.id);
       res.json(course);
     } catch (error) {
       next(error);

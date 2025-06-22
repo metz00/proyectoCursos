@@ -14,12 +14,23 @@ class CategoryServices {
     return { data: category };
   }
 
-  async getCategories() {
-    const categories = await this.model.findAll({
-      include: ['courses']
-    });
-    return categories;
-  }
+async getCategories(limit = 10, offset = 0) {
+  const { count, rows } = await this.model.findAndCountAll({
+    include: ['courses'],
+    limit,
+    offset,
+  });
+
+  return {
+    data: rows,
+    pagination: {
+      totalItems: count,
+      totalPages: Math.ceil(count / limit),
+      currentPage: Math.floor(offset / limit) + 1,
+    },
+  };
+}
+
 
   async create(categoryData) {
     const newCategory = await this.model.create(categoryData);

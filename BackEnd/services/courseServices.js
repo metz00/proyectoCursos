@@ -7,7 +7,7 @@ class CourseServices {
     this.model = models.Courses;
   }
 
-  async getIdCategory(id) {
+  async getIdCourses(id) {
     const course = await this.model.findByPk(id);
     if (!course) {
       throw boom.notFound("Course not found");
@@ -15,11 +15,21 @@ class CourseServices {
     return { data: course };
   }
 
-  async getCategories() {
-    const courses = await this.model.findAll({
-      include: ["category"],
-    });
-    return courses;
+  async getCourses({ page = 1, limit = 6 }) {
+     const offset = (page - 1) * limit;
+   const { count, rows } = await this.model.findAndCountAll({
+    offset,
+    limit,
+    include: ['category'], 
+    order: [['createdAt', 'DESC']],
+  });
+
+  return {
+    data: rows,
+    total: count,
+    page: Number(page),
+    limit: Number(limit),
+  };
   }
 
   async create(courseData) {

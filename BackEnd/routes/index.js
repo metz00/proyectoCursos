@@ -1,7 +1,7 @@
 const express = require("express");
 const passport = require("passport");
 
-const userService = require("./usersRouter");
+const userRoute = require("./usersRouter");
 const authRoute = require("./auths");
 const courseRouter = require("./coursesRouter");
 const categoryRouter = require("./categoriesRouter");
@@ -17,7 +17,7 @@ const mainRouter = (app) => {
   router.use("/auths", authRoute);
 
   router.use(passport.authenticate("jwt", { session: false })); /// PRIV
-  router.use("/users", userService);
+  router.use("/users", userRoute);
   router.use("/courses", courseRouter); 
   router.use("/categories", categoryRouter);
 
